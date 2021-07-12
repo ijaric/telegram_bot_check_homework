@@ -1,23 +1,16 @@
 import logging
 import os
 import time
-from logging.handlers import RotatingFileHandler
 
 import requests
 import telegram
 from dotenv import load_dotenv
 
 logging.basicConfig(
-    level=logging.INFO,
-    filename='program.log',
+    level=logging.DEBUG,
+    filename='homework.log',
     format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
 )
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = RotatingFileHandler('my_logger.log', maxBytes=50000000,
-                              backupCount=5)
-logger.addHandler(handler)
 
 load_dotenv()
 
@@ -29,7 +22,7 @@ CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 # чтобы он был доступен в каждом нижеобъявленном методе,
 # и не нужно было прокидывать его в каждый вызов
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
-logging.debug('Start the Bot')
+logging.debug('Start the Telegram bot')
 
 
 def parse_homework_status(homework):
@@ -50,7 +43,7 @@ def get_homeworks(current_timestamp):
 
 
 def send_message(message):
-    logging.info(f'send a message: {message}')
+    logging.info(f'Send a message: {message}')
     return bot.send_message(CHAT_ID, message)
 
 
