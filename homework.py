@@ -26,20 +26,47 @@ logging.debug('Start the Telegram bot')
 
 
 def parse_homework_status(homework):
-    homework_name = homework['homework_name']
-    if homework['status'] != 'approved':
+    homework_name = homework.get('homework_name')
+    if homework.get('status') != 'approved':
         verdict = 'К сожалению, в работе нашлись ошибки.'
+    elif homework.get('status') is None or homework_name is None:
+        logging.error('Неверный ответ сервера')
+        return 'Неверный ответ сервера'
     else:
         verdict = 'Ревьюеру всё понравилось, работа зачтена!'
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
 def get_homeworks(current_timestamp):
+    if current_timestamp is None:
+        current_timestamp = int(time.time())
     url = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
     headers = {'Authorization': f'OAuth {PRAKTIKUM_TOKEN}'}
     payload = {'from_date': current_timestamp}
-    homework_statuses = requests.get(url, headers=headers, params=payload)
-    return homework_statuses.json()
+    try:
+        homework_statuses = requests.get(url, headers=headers, params=payload)
+        return homework_statuses.json()
+
+    except requests.exceptions.Timeout:
+        err_message = 'Ошибка получения ответа Timeout'
+        logging.error(err_message)
+        send_message(err_message)
+        print(err_message)
+        time.sleep(5)
+
+    except requests.exceptions.HTTPError as e:
+        err_message = f'Ошибка получения ответа HTTP: {e}'
+        logging.error(err_message)
+        send_message(err_message)
+        print(err_message)
+        time.sleep(5)
+
+    except requests.exceptions.RequestException as e:
+        err_message = f'Ошибка запроса к API: {e}'
+        logging.error(err_message)
+        send_message(err_message)
+        print(err_message)
+        time.sleep(5)
 
 
 def send_message(message):
