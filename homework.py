@@ -39,7 +39,7 @@ def parse_homework_status(homework):
 
 
 def get_homeworks(current_timestamp):
-    if current_timestamp is None: current_timestamp = int(time.time())
+    current_timestamp = current_timestamp or int(time.time())
     url = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
     headers = {'Authorization': f'OAuth {PRAKTIKUM_TOKEN}'}
     payload = {'from_date': current_timestamp}
@@ -81,6 +81,7 @@ def main():
             send_message(err_message)
             print(err_message)
             time.sleep(5)
+
 
 if __name__ == '__main__':
     main()
