@@ -18,9 +18,6 @@ PRAKTIKUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-# проинициализируйте бота здесь,
-# чтобы он был доступен в каждом нижеобъявленном методе,
-# и не нужно было прокидывать его в каждый вызов
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
 logging.debug('Start the Telegram bot')
 
@@ -51,7 +48,6 @@ def get_homeworks(current_timestamp):
         err_message = f'Ошибка запроса к API: {e}'
         logging.error(err_message)
         send_message(err_message)
-        print(err_message)
         time.sleep(5)
         return {}
 
@@ -79,7 +75,6 @@ def main():
             err_message = f'Бот упал с ошибкой: {e}'
             logging.error(err_message)
             send_message(err_message)
-            print(err_message)
             time.sleep(5)
 
 
